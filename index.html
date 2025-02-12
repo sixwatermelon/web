@@ -266,45 +266,39 @@
         const startLoader = document.getElementById('start-loader');
 
         // 实时视频流处理
-       <!-- index.html 改进部分 -->
+        let isProcessing = false;
 
-    // 改进的前端控制逻辑
-    let streamActive = false;
+        startBtn.addEventListener('click', async () => {
+            if (isProcessing) return;
 
-    startBtn.addEventListener('click', async () => {
-        if (streamActive) return;
+            startLoader.style.display = 'inline-block';
+            startBtn.disabled = true;
 
-        startLoader.style.display = 'inline-block';
-        startBtn.disabled = true;
-
-        try {
-            videoStream.src = `http://${location.hostname}:5000/predictCamera`;
-            streamActive = true;
-            resultText.textContent = '实时检测中...';
-        } catch (error) {
-            console.error('启动失败:', error);
-            resultText.textContent = '服务连接失败';
-        } finally {
-            startLoader.style.display = 'none';
-            startBtn.disabled = false;
-        }
-    });
-
-    stopBtn.addEventListener('click', async () => {
-        if (!streamActive) return;
-
-        try {
-            const response = await fetch(`http://${location.hostname}:5000/stopCamera`);
-            if (response.ok) {
-                videoStream.src = '';
-                streamActive = false;
-                resultText.textContent = '已停止检测';
+            try {
+                videoStream.src = `http://127.0.0.1:5000/predictCamera`;
+                isProcessing = true;
+                resultText.textContent = '正在实时检测中...';
+            } catch (error) {
+                console.error('启动失败:', error);
+                resultText.textContent = '服务连接失败，请重试';
+            } finally {
+                startLoader.style.display = 'none';
+                startBtn.disabled = false;
             }
-        } catch (error) {
-            console.error('停止失败:', error);
-        }
-    });
+        });
 
+        stopBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/stopCamera');
+                if (response.ok) {
+                    videoStream.src = '';
+                    isProcessing = false;
+                    resultText.textContent = '识别已停止';
+                }
+            } catch (error) {
+                console.error('停止失败:', error);
+            }
+        });
 
         // 用户反馈处理
         document.getElementById('feedback-form').addEventListener('submit', async (e) => {
@@ -346,9 +340,6 @@
             `;
             historyList.appendChild(div);
         });
-
-
-
     </script>
 <p class="mt-5 mb-3 text-muted" style="text-align: center; font-size: 50%; opacity: 0.5;">不知道是什么垃圾，让ai来帮助你吧！<a href="./dinosaur.html">&copy;</a></p>
 
