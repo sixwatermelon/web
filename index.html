@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能垃圾分类识别系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #4f46e5;
+            --accent-color: #7c3aed;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-300: #cbd5e1;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .navbar a {
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .navbar a:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+        }
+
+        /* 主要内容容器 */
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 视频识别区域 */
+        .camera-section {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0;
+            transition: var(--transition);
+        }
+
+        #video-stream {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        /* 控制按钮组 */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray-300);
+            color: var(--dark-color);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+            opacity: 0.9;
+        }
+
+        /* 识别结果区域 */
+        .result-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+
+        .result-content {
+            padding: 1rem;
+            background: var(--light-color);
+            border-radius: 8px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* 加载动画 */
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--gray-300);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+
+            #video-stream {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <h1>智能垃圾分类识别系统</h1>
+        <nav>
+            <ul class="navbar-nav">
+                <li><a href="#home">实时识别</a></li>
+                <li><a href="#education">分类指南</a></li>
+                <li><a href="#history">识别记录</a></li>
+                <li><a href="#feedback">反馈建议</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="home" class="camera-section hover-scale">
+            <h2>实时垃圾分类识别</h2>
+            <img id="video-stream" alt="视频流未启动">
+            <div class="button-group">
+                <button id="start-btn" class="btn-primary">
+                    <span class="loader" id="start-loader"></span>
+                    开启实时识别
+                </button>
+                <button id="stop-btn" class="btn-secondary">停止识别</button>
+            </div>
+        </section>
+
+        <section class="result-section hover-scale">
+            <h2>实时识别结果</h2>
+            <div class="result-content">
+                <p id="result-text">摄像头准备就绪，点击上方按钮开始识别</p>
+                <div class="confidence-meter" id="confidence-meter"></div>
+            </div>
+        </section>
+
+        <section id="education" class="grid">
+            <article class="card hover-scale">
+                <h3>可回收物</h3>
+                <p>纸张、塑料、玻璃、金属、纺织品等</p>
+            </article>
+            <article class="card hover-scale">
+                <h3>有害垃圾</h3>
+                <p>电池、药品、油漆桶、荧光灯管等</p>
+            </article>
+            <article class="card hover-scale">
+                <h3>厨余垃圾</h3>
+                <p>剩菜剩饭、瓜皮果核、花卉绿植等</p>
+            </article>
+            <article class="card hover-scale">
+                <h3>其他垃圾</h3>
+                <p>砖瓦陶瓷、渣土、卫生用品等</p>
+            </article>
+        </section>
+
+        <section id="history" class="card hover-scale">
+            <h2>识别历史记录</h2>
+            <div id="history-list" class="grid"></div>
+        </section>
+
+        <section id="feedback" class="card hover-scale">
+            <h2>用户反馈</h2>
+            <form id="feedback-form">
+                <textarea placeholder="请输入您的宝贵建议..." rows="4"></textarea>
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">提交反馈</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const videoStream = document.getElementById('video-stream');
+        const resultText = document.getElementById('result-text');
+        const startLoader = document.getElementById('start-loader');
+
+        // 实时视频流处理
+        let isProcessing = false;
+
+        startBtn.addEventListener('click', async () => {
+            if (isProcessing) return;
+
+            startLoader.style.display = 'inline-block';
+            startBtn.disabled = true;
+
+            try {
+                videoStream.src = `http://127.0.0.1:5000/predictCamera`;
+                isProcessing = true;
+                resultText.textContent = '正在实时检测中...';
+            } catch (error) {
+                console.error('启动失败:', error);
+                resultText.textContent = '服务连接失败，请重试';
+            } finally {
+                startLoader.style.display = 'none';
+                startBtn.disabled = false;
+            }
+        });
+
+        stopBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/stopCamera');
+                if (response.ok) {
+                    videoStream.src = '';
+                    isProcessing = false;
+                    resultText.textContent = '识别已停止';
+                }
+            } catch (error) {
+                console.error('停止失败:', error);
+            }
+        });
+
+        // 用户反馈处理
+        document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const feedback = e.target.querySelector('textarea').value;
+
+            try {
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ feedback })
+                });
+
+                if (response.ok) {
+                    alert('感谢您的反馈！');
+                    e.target.reset();
+                }
+            } catch (error) {
+                console.error('反馈提交失败:', error);
+            }
+        });
+
+        // 历史记录模拟数据
+        const historyData = [
+            { date: '2023-12-20', category: '可回收物', item: '塑料瓶' },
+            { date: '2023-12-19', category: '有害垃圾', item: '锂电池' }
+        ];
+
+        const historyList = document.getElementById('history-list');
+        historyData.forEach(entry => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+                <h3>${entry.category}</h3>
+                <p>${entry.item}</p>
+                <small>${entry.date}</small>
+            `;
+            historyList.appendChild(div);
+        });
+    </script>
+<p class="mt-5 mb-3 text-muted" style="text-align: center; font-size: 50%; opacity: 0.5;">不知道是什么垃圾，让ai来帮助你吧！<a href="./dinosaur.html">&copy;</a></p>
+
+</body>
+</html>

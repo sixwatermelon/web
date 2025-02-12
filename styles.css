@@ -1,0 +1,134 @@
+:root {
+    --primary-color: #2563eb;    /* 更现代的主色调 */
+    --secondary-color: #4f46e5;  /* 辅色 */
+    --accent-color: #7c3aed;     /* 强调色 */
+    --dark-color: #1e293b;       /* 深色 */
+    --light-color: #f8fafc;      /* 浅色 */
+    --gray-300: #cbd5e1;         /* 中性灰色 */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 基础重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif; /* 现代字体栈 */
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 标题样式 */
+h1 { font-size: 2.8rem; line-height: 1.2; }
+h2 { font-size: 2.2rem; margin-bottom: 1.25rem; }
+h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+
+/* 增强型按钮 */
+button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    opacity: 0.9;
+}
+
+/* 现代卡片设计 */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+/* 导航栏升级 */
+.navbar {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.navbar a {
+    color: var(--dark-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
+/* 现代表单元素 */
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--gray-300);
+    border-radius: 8px;
+    background: white;
+    transition: var(--transition);
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* 网格布局 */
+.grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* 页脚样式升级 */
+.footer {
+    background: var(--dark-color);
+    color: white;
+    padding: 3rem 1rem;
+    margin-top: 4rem;
+}
+
+/* 响应式设计增强 */
+@media (max-width: 768px) {
+    html { font-size: 14px; }
+
+    .navbar {
+        padding: 1rem}}
